@@ -2,6 +2,9 @@
 #define RAYH
 
 #include <glm/vec3.hpp>
+#include <glm/common.hpp>
+#include <glm/geometric.hpp>
+#include <glm/trigonometric.hpp>
 
 class ray {
 public:
