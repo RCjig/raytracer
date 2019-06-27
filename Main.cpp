@@ -39,13 +39,14 @@ int main() {
 	int ns = 100;
 	file << "P3\n" << nx << " " << ny << "\n255\n";
 
-	hitable *list[4];
-	list[0] = new sphere(glm::vec3(0.0f, 0.0f, -1.0f), 0.5f, new lambertian(glm::vec3(0.8f, 0.3f, 0.3f)));
+	hitable *list[5];
+	list[0] = new sphere(glm::vec3(0.0f, 0.0f, -1.0f), 0.5f, new lambertian(glm::vec3(0.1f, 0.2f, 0.5f)));
 	list[1] = new sphere(glm::vec3(0.0f, -100.5f, -1.0f), 100.0f, new lambertian(glm::vec3(0.8f, 0.8f, 0.0f)));
-	list[2] = new sphere(glm::vec3(1.0f, 0.0f, -1.0f), 0.5f, new metal(glm::vec3(0.8f, 0.6f, 0.2f), 0.3f));
-	list[3] = new sphere(glm::vec3(-1.0f, 0.0f, -1.0f), 0.5f, new metal(glm::vec3(0.8f), 1.0f));
+	list[2] = new sphere(glm::vec3(1.0f, 0.0f, -1.0f), 0.5f, new metal(glm::vec3(0.8f, 0.6f, 0.2f), 0.0f));
+	list[3] = new sphere(glm::vec3(-1.0f, 0.0f, -1.0f), 0.5f, new dielectric(1.5f));
+	list[4] = new sphere(glm::vec3(-1.0f, 0.0f, -1.0f), -0.45f, new dielectric(1.5f));
 
-	hitable *world = new hitable_list(list, 4);
+	hitable *world = new hitable_list(list, 5);
 	camera cam;
 
 	for (int j = ny - 1; j >= 0; j--) {
