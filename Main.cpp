@@ -45,9 +45,18 @@ int main() {
 	list[2] = new sphere(glm::vec3(1.0f, 0.0f, -1.0f), 0.5f, new metal(glm::vec3(0.8f, 0.6f, 0.2f), 0.0f));
 	list[3] = new sphere(glm::vec3(-1.0f, 0.0f, -1.0f), 0.5f, new dielectric(1.5f));
 	list[4] = new sphere(glm::vec3(-1.0f, 0.0f, -1.0f), -0.45f, new dielectric(1.5f));
+	
+	/*
+	float R = cos(M_PI / 4);
+	hitable *list[2];
+
+	list[0] = new sphere(glm::vec3(-R, 0.0f, -1.0f), R, new lambertian(glm::vec3(0.0f, 0.0f, 1.0f)));
+	list[1] = new sphere(glm::vec3(R, 0.0f, -1.0f), R, new lambertian(glm::vec3(1.0f, 0.0f, 0.0f)));
+	*/
 
 	hitable *world = new hitable_list(list, 5);
-	camera cam;
+	camera cam(glm::vec3(-2.0f, 2.0f, 1.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), 
+		25, float(nx) / float(ny));
 
 	for (int j = ny - 1; j >= 0; j--) {
 		for (int i = 0; i < nx; i++) {
