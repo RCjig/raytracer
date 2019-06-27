@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+
 #include <limits>
 #include <glm/gtx/string_cast.hpp>
 #include <random>
@@ -7,34 +8,20 @@
 #include "Sphere.h"
 #include "HitableList.h"
 #include "Camera.h"
+#include "Material.h"
 
-void random() {
-	/* for testing purposes
-	glm::vec3 test(1.0f);
-	std::cout << glm::to_string(test) << std::endl;
-	std::cin.ignore();
-	*/
-}
-
-glm::vec3 random_in_unit_sphere() {
-	glm::vec3 p;
-
-	do {
-		std::random_device rd;
-		std::mt19937 gen(rd());
-		std::uniform_real_distribution<> dis(0.0f, 1.0f);
-
-		p = 2.0f * glm::vec3(dis(gen), dis(gen), dis(gen)) - glm::vec3(1.0f);
-	} while (glm::length(p) * glm::length(p) >= 1.0f);
-
-	return p;
-}
-
-glm::vec3 color(const ray& r, hitable *world) {
+glm::vec3 color(const ray& r, hitable *world, int depth) {
 	hit_record rec;
 	if (world->hit(r, 0.001f, std::numeric_limits<float>::max(), rec)) {
-		glm::vec3 target = rec.p + rec.normal + random_in_unit_sphere();
-		return 0.5f * color(ray(rec.p, target - rec.p), world);
+		ray scattered;
+		glm::vec3 attenuation;
+
+		if (depth < 50 && rec.mat_ptr->scatter(r, rec, attenuation, scattered)) {
+			return attenuation * color(scattered, world, depth + 1);
+		}
+		else {
+			return glm::vec3(0.0f);
+		}
 	}
 	else {
 		glm::vec3 unit_direction = glm::normalize(r.direction());
@@ -52,11 +39,13 @@ int main() {
 	int ns = 100;
 	file << "P3\n" << nx << " " << ny << "\n255\n";
 
-	hitable *list[2];
-	list[0] = new sphere(glm::vec3(0.0f, 0.0f, -1.0f), 0.5f);
-	list[1] = new sphere(glm::vec3(0.0f, -100.5f, -1.0f), 100.0f);
+	hitable *list[4];
+	list[0] = new sphere(glm::vec3(0.0f, 0.0f, -1.0f), 0.5f, new lambertian(glm::vec3(0.8f, 0.3f, 0.3f)));
+	list[1] = new sphere(glm::vec3(0.0f, -100.5f, -1.0f), 100.0f, new lambertian(glm::vec3(0.8f, 0.8f, 0.0f)));
+	list[2] = new sphere(glm::vec3(1.0f, 0.0f, -1.0f), 0.5f, new metal(glm::vec3(0.8f, 0.6f, 0.2f), 0.3f));
+	list[3] = new sphere(glm::vec3(-1.0f, 0.0f, -1.0f), 0.5f, new metal(glm::vec3(0.8f), 1.0f));
 
-	hitable *world = new hitable_list(list, 2);
+	hitable *world = new hitable_list(list, 4);
 	camera cam;
 
 	for (int j = ny - 1; j >= 0; j--) {
@@ -73,7 +62,7 @@ int main() {
 
 				ray r = cam.get_ray(u, v);
 				glm::vec3 p = r.point_at_parameter(2.0f);
-				col += color(r, world);
+				col += color(r, world, 0);
 
 			}
 			
