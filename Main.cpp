@@ -16,10 +16,25 @@ void random() {
 	*/
 }
 
+glm::vec3 random_in_unit_sphere() {
+	glm::vec3 p;
+
+	do {
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_real_distribution<> dis(0.0f, 1.0f);
+
+		p = 2.0f * glm::vec3(dis(gen), dis(gen), dis(gen)) - glm::vec3(1.0f);
+	} while (glm::length(p) * glm::length(p) >= 1.0f);
+
+	return p;
+}
+
 glm::vec3 color(const ray& r, hitable *world) {
 	hit_record rec;
-	if (world->hit(r, 0.0f, std::numeric_limits<float>::max(), rec)) {
-		return 0.5f * glm::vec3(rec.normal.x + 1.0f, rec.normal.y + 1.0f, rec.normal.z + 1.0f);
+	if (world->hit(r, 0.001f, std::numeric_limits<float>::max(), rec)) {
+		glm::vec3 target = rec.p + rec.normal + random_in_unit_sphere();
+		return 0.5f * color(ray(rec.p, target - rec.p), world);
 	}
 	else {
 		glm::vec3 unit_direction = glm::normalize(r.direction());
@@ -63,12 +78,14 @@ int main() {
 			}
 			
 			col /= float(ns);
+			col = glm::vec3(sqrt(col.x), sqrt(col.y), sqrt(col.z));
 			int ir = int(255.99 * col.x);
 			int ig = int(255.99 * col.y);
 			int ib = int(255.99 * col.z);
 
 			file << ir << " " << ig << " " << ib << "\n";
 		}
+		std::cout << j << std::endl;
 	}
 
 	file.close();
