@@ -1,3 +1,5 @@
 ﻿  Main.cpp
-c:\users\ryan\source\repos\raytracer\raytracer\camera.h(12): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\ryan\source\repos\raytracer\raytracer\camera.h(26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\ryan\source\repos\raytracer\raytracer\main.cpp(45): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\ryan\source\repos\raytracer\raytracer\main.cpp(53): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   RayTracer.vcxproj -> C:\Users\Ryan\source\repos\RayTracer\Debug\RayTracer.exe
