@@ -7,12 +7,11 @@
 
 glm::vec3 random_in_unit_disk() {
 	glm::vec3 p;
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<> dis(0.0f, 1.0f);
 	
 	do {
-		std::random_device rd;
-		std::mt19937 gen(rd());
-		std::uniform_real_distribution<> dis(0.0f, 1.0f);
-
 		p = 2.0f * glm::vec3(dis(gen), dis(gen), 0.0f) - glm::vec3(1.0f, 1.0f, 0.0f);
 	} while (glm::dot(p, p) >= 1.0f);
 

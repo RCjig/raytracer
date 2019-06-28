@@ -44,7 +44,7 @@ hitable *random_scene() {
 
 			float choose_mat = dis(gen);
 			glm::vec3 center(a + 0.8f * dis(gen), 0.2f, b + 0.9f * dis(gen));
-			if ((center - glm::vec3(4.0f, 0.2f, 0.0f)).length() > 0.9f) {
+			if (glm::length((center - glm::vec3(4.0f, 0.2f, 0.0f))) > 0.9f) {
 				if (choose_mat < 0.8f) {
 					list[i++] = new sphere(center, 0.2f, new lambertian(glm::vec3(dis(gen) * dis(gen), dis(gen) * dis(gen), dis(gen) * dis(gen))));
 				}
@@ -69,6 +69,10 @@ hitable *random_scene() {
 int main() {
 	std::ofstream file;
 	file.open("test.ppm");
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<> dis(0.0f, 1.0f);
 	
 	int nx = 1200;
 	int ny = 800;
@@ -95,19 +99,14 @@ int main() {
 	glm::vec3 lookfrom(13.0f, 2.0f, 3.0f);
 	glm::vec3 lookat(0.0f, 0.0f, 0.0f);
 	float dist_to_focus = 10.0f;
-	float aperture = 0.01f;
+	float aperture = 0.1f;
 
 	camera cam(lookfrom, lookat, glm::vec3(0.0f, 1.0f, 0.0f), 20, float(nx) / float(ny), aperture, dist_to_focus);
 
 	for (int j = ny - 1; j >= 0; j--) {
 		for (int i = 0; i < nx; i++) {
 			glm::vec3 col(0.0f);
-
 			for (int s = 0; s < ns; s++) {
-				std::random_device rd;
-				std::mt19937 gen(rd());
-				std::uniform_real_distribution<> dis(0.0f, 1.0f);
-
 				float u = float(i + dis(gen)) / float(nx);
 				float v = float(j + dis(gen)) / float(ny);
 

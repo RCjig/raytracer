@@ -88,12 +88,13 @@ public:
 		if (glm::dot(r_in.direction(), rec.normal) > 0) {
 			outward_normal = -rec.normal;
 			ni_over_nt = ref_idx;
-			cosine = ref_idx * glm::dot(r_in.direction(), rec.normal) / r_in.direction().length();
+			cosine = glm::dot(r_in.direction(), rec.normal) / glm::length(r_in.direction());
+			cosine = sqrt(1 - ref_idx * ref_idx * (1 - cosine * cosine));
 		}
 		else {
 			outward_normal = rec.normal;
 			ni_over_nt = 1.0f / ref_idx;
-			cosine = -glm::dot(r_in.direction(), rec.normal) / r_in.direction().length();
+			cosine = -glm::dot(r_in.direction(), rec.normal) / glm::length(r_in.direction());
 		}
 
 		if (refract(r_in.direction(), outward_normal, ni_over_nt, refracted)) {
